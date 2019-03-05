@@ -1,3 +1,4 @@
+console.log("products", products);
 // Elemento de menú
 var CoreTerrenoApp  = function() {
 	this.menu = [];
@@ -42,6 +43,7 @@ CoreTerrenoApp.prototype = {
 		ratio = mw/wn;
 		console.log(ratio);
 		ctx.ratio = ratio;
+		console.log("[Debug]", ctx.ratio);
 
 	},
 	setEvents: function(ctx) {
@@ -52,8 +54,12 @@ CoreTerrenoApp.prototype = {
 			ctx.mFondo = $('#numFondo').val();
 			console.log(ctx.mFrente+'x'+ctx.mFondo);
 			ctx.getVisualScale(ctx);
-			$('.lienzoHtml').width(ctx.mFrente*ctx.scale*ctx.ratio);
-			$('.lienzoHtml').height(ctx.mFondo*ctx.scale*ctx.ratio);
+			console.log("ctx.mFrente", ctx.mFrente);
+			console.log("ctx.mFondo", ctx.mFondo);
+			console.log("ctx.scale", ctx.scale);
+			console.log("ctx.ratio", ctx.ratio);
+			$('.lienzoHtml').width((ctx.mFrente*ctx.scale*ctx.ratio)-200);
+			$('.lienzoHtml').height((ctx.mFondo*ctx.scale*ctx.ratio)-200);
 			$('.lienzoHtml .H01').html(ctx.mFrente+' m');
 			$('.lienzoHtml .V01').html(ctx.mFondo+' m');
 			ctx.initCanvas(ctx);
@@ -221,38 +227,38 @@ CoreTerrenoApp.prototype = {
 		});
 
 		$('#btnTool1A').click(function(e) {
-			$('#numW').val(1.5);
-			$('#numH').val(1.5);
+			// $('#numW').val(5);
+			// $('#numH').val(5);
 			ctx.drawCircularTable(ctx);
 		});
 		$('#btnTool1B').click(function(e) {
-			$('#numW').val(2);
-			$('#numH').val(2);
+			// $('#numW').val(2);
+			// $('#numH').val(2);
 			ctx.drawCircularTable(ctx);
 		});
 		$('#btnTool1C').click(function(e) {
-			$('#numW').val(3);
-			$('#numH').val(3);
+			// $('#numW').val(3);
+			// $('#numH').val(3);
 			ctx.drawCircularTable(ctx);
 		});
 		$('#btnTool1D').click(function(e) {
-			$('#numW').val(.5);
-			$('#numH').val(.5);
+			// $('#numW').val(.5);
+			// $('#numH').val(.5);
 			ctx.drawCircularTable(ctx);
 		});
 		$('#btnTool2A').click(function(e) {
-			$('#numW').val(1.5);
-			$('#numH').val(1.5);
+			// $('#numW').val(1.5);
+			// $('#numH').val(1.5);
 			ctx.drawSquareTable(ctx);
 		});
 		$('#btnTool2B').click(function(e) {
-			$('#numW').val(2);
-			$('#numH').val(2);
+			// $('#numW').val(2);
+			// $('#numH').val(2);
 			ctx.drawSquareTable(ctx);
 		});
 		$('#btnTool2C').click(function(e) {
-			$('#numW').val(3);
-			$('#numH').val(3);
+			// $('#numW').val(3);
+			// $('#numH').val(3);
 			ctx.drawSquareTable(ctx);
 		});
 		$('#btnTool2D').click(function(e) {
@@ -269,6 +275,61 @@ CoreTerrenoApp.prototype = {
 		});
 		$('#btnTool4D').click(function(e) {
 			ctx.drawChair(ctx,1);
+		});
+		$("#buscarItem").click(function(){
+			var inputIdProduct = $("#idProduct").val();
+			var host = 'http://ec2-13-58-120-128.us-east-2.compute.amazonaws.com/';
+
+			if(inputIdProduct !== ''){
+				console.log("se ha hecho click", inputIdProduct);
+				var product = products.filter(function(item){
+					return item.id === inputIdProduct
+				});
+
+				if(Array.isArray(product) && product.length > 0){
+					console.log("product", product);
+					$("#product-name").html(product[0].name);
+					$("#product-id").html(product[0].id);
+					$("#product-img").attr({"src" : host + product[0].url});
+
+					var W = product[0].size.split("X")[0];
+					var H = product[0].size.split("X")[1];
+
+					$('#numW').val(W);
+					$('#numH').val(H);
+					$('#id_element').val(product[0].id);
+					$('#type_element').val(product[0].type);
+
+					switch(product[0].type){
+						case'Mesas':
+							if(product[0].name.indexOf("REDONDA") != -1) {
+								$('#numW').val(W);
+								$('#numH').val(W);
+								$('#btnTool1A').click();
+							}
+							else  $('#btnTool2A').click();
+							break;
+						case'Sillas':
+							$('#btnTool4D').click();
+							break;
+					}
+					// if(product[0].type && product[0].type === 'Mesas' && )
+				} else {
+					alert("producto no encontrado");
+				}
+
+			} else {
+				alert("Debes agregar un producto");
+			}
+		});
+		$("#addQuotation").click(function(){
+			// sillas="[{id:1, qty: 5}]"&mesas=[{id:4, qty: 9}, {id: 78, qty; 4}]
+			console.log("agregar a cotización --------------------");
+			var k = $("#kanvas").siblings();
+			console.log(k);
+			[...k].map(function(item){
+				console.log(item);
+			});
 		});
 	},
 	toggleDropdown: function(ctx, id) {
@@ -346,9 +407,12 @@ CoreTerrenoApp.prototype = {
 	},
 	drawSquareTable: function(ctx) {
     	var w = $('#numW').val()*ctx.scale;
-    	var h = $('#numH').val()*ctx.scale;
+		var h = $('#numH').val()*ctx.scale;
+		var id = $('#id_element').val();
+		var type = $('#type_element').val();
+
     	var style = 'style="width:'+w+'px; height:'+h+'px;"';
-    	ctx.c.append('<div id="osq-'+ctx.objId+'" class="OSQ1" '+style+'></div>');
+    	ctx.c.append('<div id="osq-'+ctx.objId+'" class="OSQ1" '+style+' data-element="'+ id +'-'+ type +'" ></div>');
     	ctx.addDraggable(ctx,'osq-'+ctx.objId+'');
     	$('#osq-'+ctx.objId).width(w*ctx.ratio);
 		$('#osq-'+ctx.objId).height(h*ctx.ratio);
@@ -359,16 +423,21 @@ CoreTerrenoApp.prototype = {
 		console.log( $('#numW').val() + ' ' + $('#numH').val() );
 		var w = $('#numW').val()*ctx.scale;
     	var h = $('#numH').val()*ctx.scale;
-    	var r = $('#numW').val()*ctx.scale/.5;
+		var r = $('#numW').val()*ctx.scale/.5;
+		var id = $('#id_element').val();
+		var type = $('#type_element').val();
+
     	var style = 'style="width:'+w+'px; height:'+h+'px; border-radius:'+r+'px;"';
-    	ctx.c.append('<div id="ocl-'+ctx.objId+'" class="OCL1" '+style+'></div>');
+    	ctx.c.append('<div id="ocl-'+ctx.objId+'" class="OCL1" '+style+' data-element="'+ id +'-'+ type +'" ></div>');
     	ctx.addDraggable(ctx,'ocl-'+ctx.objId+'');
     	$('#ocl-'+ctx.objId).width(w*ctx.ratio); // (80*ctx.ratio
 		$('#ocl-'+ctx.objId).height(h*ctx.ratio);
     	ctx.objId++;
 	},
 	drawChair: function(ctx, typeId) {
-		ctx.c.append('<div id="och-'+ctx.objId+'" class="OCH'+typeId+'"></div>');
+		var id = $('#id_element').val();
+		var type = $('#type_element').val();
+		ctx.c.append('<div id="och-'+ctx.objId+'" class="OCH'+typeId+'" data-element="'+ id +'-'+ type +'" ></div>');
 		ctx.addDraggable(ctx,'och-'+ctx.objId+'');
 		var w = 42, h = 42;
 		if(typeId == 2) {
@@ -433,7 +502,7 @@ CoreTerrenoApp.prototype = {
 		
 		ctx.canvasCtx.fillStyle = "#FF0000";
 		ctx.canvasCtx.beginPath();
-        ctx.canvasCtx.lineWidth = 1;
+        ctx.canvasCtx.lineWidth = 5;
         var el1pos = $('#'+lineObj.pini).position();
         var el2pos = $('#'+lineObj.pfin).position();
         console.log(el1pos);
