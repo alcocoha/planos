@@ -51,8 +51,14 @@ CoreTerrenoApp.prototype = {
 			ctx.mFrente = $('#numFrente').val();
 			ctx.mFondo = $('#numFondo').val();
 
+			onlyNumbers = /^[0-9]+$/;
+
 			if(ctx.mFrente === "" || ctx.mFondo === ""){
 				alert("Debes ingresar los metros de frente y fondo que tiene tu espacio.");
+				return;
+			}
+			if(!onlyNumbers.test(ctx.mFrente) || !onlyNumbers.test(ctx.mFrente)){
+				alert("Solo se admiten numeros enteros.");
 				return;
 			}
 
