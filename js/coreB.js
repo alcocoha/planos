@@ -48,10 +48,16 @@ CoreTerrenoApp.prototype = {
 	},
 	setEvents: function(ctx) {
 		$('#createTerrenoBtn').click(function(e) {
-			$('.lienzo-dialog').show();
-			$('.terreno-dialog').hide();
 			ctx.mFrente = $('#numFrente').val();
 			ctx.mFondo = $('#numFondo').val();
+
+			if(ctx.mFrente === "" || ctx.mFondo === ""){
+				alert("Debes ingresar los metros de frente y fondo que tiene tu espacio.");
+				return;
+			}
+
+			$('.lienzo-dialog').show();
+			$('.terreno-dialog').hide();
 			console.log(ctx.mFrente+'x'+ctx.mFondo);
 			ctx.getVisualScale(ctx);
 			console.log("ctx.mFrente", ctx.mFrente);
@@ -104,16 +110,24 @@ CoreTerrenoApp.prototype = {
 		});
 
 		$('#createPdfBtn').click(function(e) {
-			var pdf = new jsPDF();
+			var pdf = new jsPDF({
+				orientation: 'landscape',
+			});
 			pdf.text(20, 20, 'Tu terreno creado:');
+
+			var frente = document.querySelector(".lienzoHtml").style.width;
+			var fondo = document.querySelector(".lienzoHtml").style.height;
+
+			console.log("frente: ", frente);
+			console.log("fondo: ", fondo);
   			//pdf.addImage(imgData, 'JPEG', 0, 0);
 			html2canvas(document.querySelector(".lienzoHtml")).then(canvas => {
 			    //document.body.appendChild(canvas)
 			    var imgData = canvas.toDataURL("image/jpeg", 1.0);
-			    console.log(imgData);
-			    pdf.addImage(imgData, 'JPEG', 0, 30);
+				console.log(imgData);
+			    pdf.addImage(imgData, 'JPEG', 0, 30, parseInt(frente)/5, parseInt(fondo)/5);
 
-			    pdf.save("download.pdf");
+			    pdf.save("terreno_"+ Date.now() +".pdf");
 			});
 		});
 
