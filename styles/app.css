@@ -403,3 +403,36 @@ h1{
 	font-weight: bold;
 	font-style: italic;
 }
+
+.screen-blocker{
+	background-color: #ffcc00;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	display: block;
+}
+
+.screen-blocker span{
+	position: absolute;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	height: 100px;
+	width: 300px;
+	text-align: center;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+	.screen-blocker{
+		display: none;
+	}
+  }
