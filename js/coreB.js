@@ -347,27 +347,42 @@ CoreTerrenoApp.prototype = {
 		});
 	jQuery("#addQuotation").click(function(){
 			// products=1022=10,2299=5
-			var arrayItems = [];
-			var arrayConters = [];
 			var k = jQuery("#kanvas").siblings();
+			var uniqueItems = [];
+			var allItems = [];
+			var url = '/products=';
 
 			k.map(function(item){
 				var i = k[item].getAttribute('data-element').split("-")[0];
-				if(arrayItems.indexOf(i) === -1){
-					arrayItems.push(i);
-					arrayConters.push(1);
-				} else {
-					arrayConters[arrayConters.length-1] = arrayConters[arrayConters.length-1] + 1;
+				console.log(i);
+				if(uniqueItems.indexOf(i) === -1){
+					uniqueItems.push(i);
 				}
-
+				allItems.push(i);
 			});
 
-			var l = '';
-			for(var j = 0; j < arrayItems.length; j++){
-				l += arrayItems[j] + '=' + arrayConters[j] + ',';
+			console.log("uniqueItems", uniqueItems);
+			console.log("allItems", allItems);
+
+
+			for (let i = 0; i < uniqueItems.length; i++) {
+
+				var product = uniqueItems[i];
+				var counter = 0;
+				
+				for (let j = 0; j < allItems.length; j++) {
+					if(product === allItems[j]){
+						counter++;
+					}
+				}
+
+				url += product + '=' + counter + ',';
+				
 			}
+
+			console.log('url: ', url);
 			
-			window.location.href = 'productos/' + l.slice(0, -1);
+			window.location.href = url.slice(0, -1);
 			
 		});
 	},
