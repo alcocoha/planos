@@ -350,8 +350,8 @@ CoreTerrenoApp.prototype = {
 			var k = jQuery("#kanvas").siblings();
 			var uniqueItems = [];
 			var allItems = [];
-			var url = '/products=';
-
+			var url = 'http://ec2-13-58-120-128.us-east-2.compute.amazonaws.com/pedido?products=';
+			
 			k.map(function(item){
 				var i = k[item].getAttribute('data-element').split("-")[0];
 				console.log(i);
