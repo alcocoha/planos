@@ -353,12 +353,15 @@ CoreTerrenoApp.prototype = {
 			var url = 'http://ec2-13-58-120-128.us-east-2.compute.amazonaws.com/pedido?products=';
 			
 			k.map(function(item){
-				var i = k[item].getAttribute('data-element').split("-")[0];
-				console.log(i);
-				if(uniqueItems.indexOf(i) === -1){
-					uniqueItems.push(i);
+				console.log('items --- item: ',item);
+				var i = k[item].getAttribute('data-element') ? k[item].getAttribute('data-element').split("-")[0] : null;
+				console.log('items --- i:', i);
+				if(i !== null){
+					if(uniqueItems.indexOf(i) === -1){
+						uniqueItems.push(i);
+					}
+					allItems.push(i);
 				}
-				allItems.push(i);
 			});
 
 			console.log("uniqueItems", uniqueItems);
