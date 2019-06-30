@@ -81,8 +81,9 @@ CoreTerrenoApp.prototype = {
 		});
 
 	jQuery('#createNewBtn').click(function(e) {
-		jQuery('.lienzo-dialog').hide();
-		jQuery('.terreno-dialog').show();
+		// jQuery('.lienzo-dialog').hide();
+		// jQuery('.terreno-dialog').show();
+		window.location.href = "http://132.148.10.55/rentandcompany/planos/";
 		});
 
 	jQuery('.tool').hover(function() {
@@ -118,23 +119,78 @@ CoreTerrenoApp.prototype = {
 		jQuery('.lienzo-dialog .desc').html('&nbsp;');
 		});
 
-	jQuery('#createPdfBtn').click(function(e) {
+		jQuery('#createPdfBtn').click(function(e) {
 			var pdf = new jsPDF({
-				orientation: 'landscape',
+				orientation: 'portrait',
+				unit: 'mm',
+				format: 'letter' // 215 x 279.4mm
 			});
 			pdf.text(20, 20, 'Tu terreno creado:');
 
-			var frente = document.querySelector(".lienzoHtml").style.width;
-			var fondo = document.querySelector(".lienzoHtml").style.height;
+			var wi = Number(document.querySelector(".lienzoHtml").style.width.slice(0,-2));
+			var hi = Number(document.querySelector(".lienzoHtml").style.height.slice(0,-2));
 
-			console.log("frente: ", frente);
-			console.log("fondo: ", fondo);
+			console.log("canvas frente: ", wi); // en px
+			console.log("canvas fondo: ", hi); // en px
+			// sheet bounds 205 mm x 240 mm
+
+			var isLandscape = (wi >= hi);
+			var ratio = wi/hi
+			console.log("isLandscape: " + isLandscape);
+			console.log("ratio: " + ratio);
+
+			var w = 0, h = 0;
+			if( isLandscape ) {
+				w = 1;
+				h = 1/ratio;
+			}
+			else {
+				w = ratio;
+				h = 1;
+			}
+
+			console.log("w: "+ w +", h: " +h);
+
+			var wf = 0, hf = 0;
+			var alfa = 1;
+			var beta = 1;
+			if( isLandscape ) {
+				wf = w * alfa;
+				hf = h * alfa;
+			}
+			else {
+				wf = w * beta;
+				hf = h * beta;
+			}
+			console.log(pdf);
+			console.log(pdf.internal);
+			console.log(pdf.internal.pageSize);
+			var wdoc = pdf.internal.pageSize.width-10;
+			var hdoc = pdf.internal.pageSize.height-40;
+			// bounds
+			console.log("wdoc: "+ wdoc +", hdoc: " +hdoc);
+
+			var wfinal = 1;
+			var hfinal = 1;
+
+			if( isLandscape ) {
+				wfinal = wdoc;
+				hfinal = wfinal * h;
+			}
+			else {
+				hfinal = hdoc;
+				wfinal = hdoc *ratio;
+			}
+			console.log("wfinal: "+ wfinal +", hfinal: " +hfinal);
+
+			window.scrollTo(0,0);
   			//pdf.addImage(imgData, 'JPEG', 0, 0);
 			html2canvas(document.querySelector(".lienzoHtml")).then(canvas => {
 			    //document.body.appendChild(canvas)
 			    var imgData = canvas.toDataURL("image/jpeg", 1.0);
 				console.log(imgData);
-			    pdf.addImage(imgData, 'JPEG', 0, 30, parseInt(frente)/5, parseInt(fondo)/5);
+				//jQuery('#dudu').attr('src', imgData);
+			    pdf.addImage(imgData, 'JPEG', 5, 30, wfinal, hfinal);
 
 			    pdf.save("terreno_"+ Date.now() +".pdf");
 			});
