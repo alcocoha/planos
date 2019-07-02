@@ -343,11 +343,13 @@ CoreTerrenoApp.prototype = {
 	jQuery('#btnTool2D').click(function(e) {
 			ctx.drawSquareTable(ctx);
 		});
+	// CURVO	
 	jQuery('#btnTool4A').click(function(e) {
-			ctx.drawChair(ctx,2);
+			ctx.drawChair(ctx, 2);
 		});
+	// CONCAVO
 	jQuery('#btnTool4B').click(function(e) {
-			ctx.drawChair(ctx,3);
+			ctx.drawChair(ctx, 3);
 		});
 	jQuery('#btnTool4C').click(function(e) {
 			ctx.drawChair(ctx,4);
@@ -367,29 +369,36 @@ CoreTerrenoApp.prototype = {
 
 				if(Array.isArray(product) && product.length > 0){
 					console.log("product", product);
-				jQuery("#product-name").html(product[0].name);
-				jQuery("#product-id").html(product[0].id);
-				jQuery("#product-img").attr({"src" : host + product[0].url});
+					jQuery("#product-name").html(product[0].name);
+					jQuery("#product-id").html(product[0].id);
+					jQuery("#product-img").attr({"src" : host + product[0].url});
 
 					var W = product[0].size.split("X")[0];
 					var H = product[0].size.split("X")[1];
 
-				jQuery('#numW').val(W);
-				jQuery('#numH').val(H);
-				jQuery('#id_element').val(product[0].id);
-				jQuery('#type_element').val(product[0].type);
-
+					jQuery('#numW').val(W);
+					jQuery('#numH').val(H);
+					jQuery('#id_element').val(product[0].id);
+					jQuery('#type_element').val(product[0].type);
+					console.log("");
 					switch(product[0].type){
-						case'Mesas':
-							if(product[0].name.indexOf("REDONDA") != -1) {
-							jQuery('#numW').val(W);
-							jQuery('#numH').val(W);
-							jQuery('#btnTool1A').click();
+						case'Mesa':
+							if(product[0].shape === "circulo" || product[0].shape === "ovalo") {
+								jQuery('#numW').val(W);
+								jQuery('#numH').val(W);
+								jQuery('#btnTool1A').click();
 							}
-						else  jQuery('#btnTool2A').click();
+							else  jQuery('#btnTool2A').click();
 							break;
-						case'Sillas':
-						jQuery('#btnTool4D').click();
+						case'Silla':
+							jQuery('#btnTool4D').click();
+							break;
+						case'Sillon':
+							if(product[0].shape === "concavo") {
+								jQuery('#btnTool4A').click();
+							} else if(product[0].shape === "curvo"){
+								jQuery('#btnTool4B').click();
+							}
 							break;
 					}
 					// if(product[0].type && product[0].type === 'Mesas' && )
@@ -553,17 +562,11 @@ CoreTerrenoApp.prototype = {
 		ctx.c.append('<div id="och-'+ctx.objId+'" class="OCH'+typeId+'" data-element="'+ id +'-'+ type +'" ></div>');
 		ctx.addDraggable(ctx,'och-'+ctx.objId+'');
 		var w = 42, h = 42;
-		if(typeId == 2) {
-			w = 54;
+		if(typeId == 2 || typeId == 3) {
+			w = jQuery('#numW').val()*ctx.scale;
+			h = jQuery('#numH').val()*ctx.scale;
 		}
-		else if(typeId == 3) {
-			w = 45;
-			h = 43;
-		}
-		else if(typeId == 4) {
-			w = 34;
-			h = 40;
-		}
+
 		
 	jQuery('#och-'+ctx.objId).width(w*ctx.ratio); // // 42*ctx.ratio
 	jQuery('#och-'+ctx.objId).height(h*ctx.ratio);
