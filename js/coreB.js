@@ -398,6 +398,8 @@ CoreTerrenoApp.prototype = {
 								jQuery('#btnTool4A').click();
 							} else if(product[0].shape === "curvo"){
 								jQuery('#btnTool4B').click();
+							} else if(product[0].shape === "cuadrado"){
+								jQuery('#btnTool2A').click();
 							}
 							break;
 					}
